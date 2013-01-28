@@ -1,6 +1,6 @@
 package tsa;
 
-public class TSAPMain {
+public class TSAMain {
 
 	/**
 	 * @param args
