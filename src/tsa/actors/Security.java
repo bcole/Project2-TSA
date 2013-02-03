@@ -3,7 +3,6 @@ package tsa.actors;
 import java.util.HashMap;
 import java.util.Map;
 
-import tsa.messages.LogMessage;
 import tsa.messages.ScanBagResults;
 import tsa.messages.ScanBodyResults;
 import akka.actor.ActorRef;
@@ -56,21 +55,21 @@ public class Security extends UntypedActor {
 		ScanResults scanResults = resultsMap.remove(passenger);
 		
 		if (scanResults.getScanBagResultsPassed()) {
-			passenger.tell(new LogMessage("Passed bag scan."));
+			System.out.println(passenger.getId() + ": Passed bag scan.");
 		} else {
-			passenger.tell(new LogMessage("Failed bag scan."));
+			System.out.println(passenger.getId() + ": Failed bag scan.");
 		}
 		
 		if (scanResults.getScanBodyResultsPassed()) {
-			passenger.tell(new LogMessage("Passed body scan."));
+			System.out.println(passenger.getId() + ": Passed body scan.");
 		} else {
-			passenger.tell(new LogMessage("Failed body scan."));
+			System.out.println(passenger.getId() + ": Failed body scan.");
 		}
 		
 		if (scanResults.getScanBagResultsPassed()) {
-			passenger.tell(new LogMessage("Passed security."));
+			System.out.println(passenger.getId() + ": Passed security.");
 		} else {
-			passenger.tell(new LogMessage("Failed security."));
+			System.out.println(passenger.getId() + ": Failed security.");
 		}
 	}
 	
