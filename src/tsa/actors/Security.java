@@ -3,9 +3,11 @@ package tsa.actors;
 import java.util.HashMap;
 import java.util.Map;
 
+import tsa.messages.ActorTerminate;
 import tsa.messages.ScanBagResults;
 import tsa.messages.ScanBodyResults;
 import akka.actor.ActorRef;
+import akka.actor.Actors;
 import akka.actor.UntypedActor;
 
 public class Security extends UntypedActor {
@@ -33,7 +35,8 @@ public class Security extends UntypedActor {
 				resultsMap.get(passenger).setScanBagResultsPassed(passed);
 				respondToScanResults(passenger);
 			}
-		} else if (message instanceof ScanBodyResults) {
+		} 
+		else if (message instanceof ScanBodyResults) {
 			ScanBodyResults resultsMessage = (ScanBodyResults) message;
 			ActorRef passenger = resultsMessage.passenger;
 			boolean passed = resultsMessage.passed;
@@ -48,6 +51,11 @@ public class Security extends UntypedActor {
 				resultsMap.get(passenger).setScanBodyResultsPassed(passed);
 				respondToScanResults(passenger);
 			}
+		} 
+		//Message to terminate and actor terminates itself. 
+		if (message instanceof ActorTerminate) { 
+			
+			this.getContext().tell(Actors.poisonPill());
 		}
 	}
 	

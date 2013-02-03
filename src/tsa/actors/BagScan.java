@@ -3,7 +3,9 @@ package tsa.actors;
 import tsa.messages.ScanBag;
 import tsa.messages.ScanBagResults;
 import akka.actor.ActorRef;
+import akka.actor.Actors;
 import akka.actor.UntypedActor;
+import tsa.messages.ActorTerminate;
 
 public class BagScan extends UntypedActor {
 	
@@ -23,6 +25,12 @@ public class BagScan extends UntypedActor {
 			ScanBagResults resultsMessage = 
 					new ScanBagResults(passenger, passed);
 			security.tell(resultsMessage);
+		}
+		
+		//Message to terminate and actor terminates itself. 
+		if (message instanceof ActorTerminate) { 
+			
+			this.getContext().tell(Actors.poisonPill());
 		}
 	}
 

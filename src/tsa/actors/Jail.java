@@ -1,7 +1,9 @@
 package tsa.actors;
 
 import akka.actor.ActorRef;
+import akka.actor.Actors;
 import akka.actor.UntypedActor;
+import tsa.messages.ActorTerminate;
 import tsa.messages.ArrivedAtJail;
 import tsa.messages.GoToDetention;
 
@@ -34,5 +36,12 @@ public class Jail extends UntypedActor {
 			//End of day passenger move to detention facility. 
 			System.out.println("Moving " + inJail.length + " to permanent detention facility");
 		}
+		
+		//Message to terminate and actor terminates itself. 
+		if (Message instanceof ActorTerminate) { 
+			
+			this.getContext().tell(Actors.poisonPill());
+		}
+		
 	}
 }
