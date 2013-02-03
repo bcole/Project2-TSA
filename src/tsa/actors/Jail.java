@@ -22,11 +22,16 @@ public class Jail {
 			//Put Passenger in Jail List
 			ActorRef badPassenger = ((ArrivedAtJail) Message).passenger;
 			inJail[jailIndex] = badPassenger;
+			System.out.println("Passenger put in jail.");
 			
 			//Increment index for next passenger. 
 			jailIndex++; 
 		}
 		
-		
+		if (Message instanceof GoToDetention) { 
+			
+			//End of day passenger move to detention facility. 
+			System.out.println("Moving " + inJail.length + " to permanent detention facility");
+		}
 	}
 }
