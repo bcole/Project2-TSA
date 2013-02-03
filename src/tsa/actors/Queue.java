@@ -27,11 +27,8 @@ public class Queue extends UntypedActor {
 	public void onReceive(Object message) {
 		if (message instanceof ArrivedAtQueue) {
 			ActorRef passenger = ((ArrivedAtQueue) message).passenger;
-			
-			// XXX: What is representing a bag?
-			ScanBag scanBagMessage = new ScanBag();
-			
-			// XXX: Ignoring BodyScan being full.
+
+			ScanBag scanBagMessage = new ScanBag(passenger);
 			ScanBody scanBodyMessage = new ScanBody(passenger);
 			
 			bagScan.tell(scanBagMessage);

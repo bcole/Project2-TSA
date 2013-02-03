@@ -16,12 +16,12 @@ public class BagScan extends UntypedActor {
 	@Override
 	public void onReceive(Object message) {
 		if (message instanceof ScanBag) {
-			// XXX: No simulation of being occupied.
-			
 			// Baggage randomly fails inspection with a probability of 20%.
-			boolean passed = (Math.random() < 0.2);
+			boolean passed = (Math.random() < 0.8);
+			ActorRef passenger = ((ScanBag) message).passenger;
 
-			ScanBagResults resultsMessage = new ScanBagResults(passed);
+			ScanBagResults resultsMessage = 
+					new ScanBagResults(passenger, passed);
 			security.tell(resultsMessage);
 		}
 	}
