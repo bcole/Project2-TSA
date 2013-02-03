@@ -15,6 +15,13 @@ public class Security extends UntypedActor {
 	// XXX: Does this need to be thread safe if it is contained in this Actor?
 	private Map<ActorRef, ScanResults> resultsMap 
 			= new HashMap<ActorRef, ScanResults>();
+	
+	private final ActorRef jail;
+	
+	//Constructor 
+	public Security(ActorRef jail) { 
+		this.jail = jail; 
+	}
 
 	@Override
 	public void onReceive(Object message) {
@@ -55,6 +62,11 @@ public class Security extends UntypedActor {
 		//Message to terminate and actor terminates itself. 
 		if (message instanceof ActorTerminate) { 
 			
+			try {
+				jail.tell(new ActorTerminate());
+			} catch (Exception excep) { 
+				System.out.println("Jail Actor already terminated OR there is another error.");
+			}
 			this.getContext().tell(Actors.poisonPill());
 		}
 	}

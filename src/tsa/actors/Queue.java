@@ -40,6 +40,9 @@ public class Queue extends UntypedActor {
 		//Message to terminate and actor terminates itself. 
 		if (message instanceof ActorTerminate) { 
 			
+			bagScan.tell(new ActorTerminate());
+			bodyScan.tell(new ActorTerminate());
+			
 			this.getContext().tell(Actors.poisonPill());
 		}
 	}

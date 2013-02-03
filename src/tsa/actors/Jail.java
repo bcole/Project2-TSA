@@ -12,9 +12,9 @@ public class Jail extends UntypedActor {
 	private final ActorRef[] inJail; 
 	private int jailIndex; 
 	
-	public Jail(ActorRef[] inJail) { 
+	public Jail(int jailCapacity) { 
 		
-		this.inJail = inJail;
+		this.inJail = new ActorRef[jailCapacity];
 		jailIndex = 0; 
 	}
 	

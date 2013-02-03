@@ -30,6 +30,14 @@ public class BagScan extends UntypedActor {
 		//Message to terminate and actor terminates itself. 
 		if (message instanceof ActorTerminate) { 
 			
+			//Try and tell the security to die. If already dead then it will 
+			//throw an exception because it can't tell it to die. Catch the exception
+			//and print info message. 
+			try { 
+				security.tell(new ActorTerminate());
+			} catch (Exception excep) { 
+				System.out.println("Security Actor already terminated OR there is another error.");
+			}
 			this.getContext().tell(Actors.poisonPill());
 		}
 	}
