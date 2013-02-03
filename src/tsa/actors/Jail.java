@@ -1,10 +1,11 @@
 package tsa.actors;
 
 import akka.actor.ActorRef;
+import akka.actor.UntypedActor;
 import tsa.messages.ArrivedAtJail;
 import tsa.messages.GoToDetention;
 
-public class Jail {
+public class Jail extends UntypedActor {
 
 	private final ActorRef[] inJail; 
 	private int jailIndex; 
@@ -15,7 +16,7 @@ public class Jail {
 		jailIndex = 0; 
 	}
 	
-	private void onReceive(Object Message) { 
+	public void onReceive(Object Message) { 
 		
 		if (Message instanceof ArrivedAtJail) {
 
