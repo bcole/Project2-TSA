@@ -1,10 +1,11 @@
 package tsa.actors;
 
 import akka.actor.ActorRef;
+import akka.actor.UntypedActor;
 import tsa.messages.ArrivedAtJail;
 import tsa.messages.GoToDetention;
 
-public class Jail {
+public class Jail extends UntypedActor {
 
 	private final ActorRef[] inJail; 
 	private int jailIndex; 
@@ -15,18 +16,23 @@ public class Jail {
 		jailIndex = 0; 
 	}
 	
-	private void onReceive(Object Message) { 
+	public void onReceive(Object Message) { 
 		
 		if (Message instanceof ArrivedAtJail) {
 
 			//Put Passenger in Jail List
 			ActorRef badPassenger = ((ArrivedAtJail) Message).passenger;
 			inJail[jailIndex] = badPassenger;
+			System.out.println("Passenger put in jail.");
 			
 			//Increment index for next passenger. 
 			jailIndex++; 
 		}
 		
-		
+		if (Message instanceof GoToDetention) { 
+			
+			//End of day passenger move to detention facility. 
+			System.out.println("Moving " + inJail.length + " to permanent detention facility");
+		}
 	}
 }
