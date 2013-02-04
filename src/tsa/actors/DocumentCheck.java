@@ -1,9 +1,11 @@
 package tsa.actors;
 
+import tsa.messages.ActorTerminate;
 import tsa.messages.ArrivedAtDocCheck;
 import tsa.messages.ArrivedAtQueue;
 import tsa.messages.FailedDocCheck;
 import akka.actor.ActorRef;
+import akka.actor.Actors;
 import akka.actor.UntypedActor;
 
 public class DocumentCheck extends UntypedActor {
@@ -40,6 +42,10 @@ public class DocumentCheck extends UntypedActor {
 				}
 			}
 		}
+		
+		// Message to terminate and actor terminates itself. 
+		if (message instanceof ActorTerminate) { 
+			this.getContext().tell(Actors.poisonPill());
+		}
 	}
-
 }

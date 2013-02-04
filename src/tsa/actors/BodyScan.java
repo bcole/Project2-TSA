@@ -1,7 +1,9 @@
 package tsa.actors;
+import tsa.messages.ActorTerminate;
 import tsa.messages.ScanBody;
 import tsa.messages.ScanBodyResults;
 import akka.actor.ActorRef;
+import akka.actor.Actors;
 import akka.actor.UntypedActor;
 
 
@@ -34,6 +36,21 @@ public class BodyScan extends UntypedActor {
 					new ScanBodyResults(passenger, passed);
 			security.tell(resultsMessage);
 		} 
+		
+		//Message to terminate and actor terminates itself. 
+		if (message instanceof ActorTerminate) { 
+			
+			//Try and tell the security to die. If already dead then it will 
+			//throw an exception because it can't tell it to die. Catch the exception
+			//and print info message. 
+			try { 
+				security.tell(new ActorTerminate());
+			} catch (Exception excep) { 
+				System.out.println("Security Actor already terminated OR there is another error.");
+			}
+			
+			this.getContext().tell(Actors.poisonPill());
+		}
 	}
 
 }

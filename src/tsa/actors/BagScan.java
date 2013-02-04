@@ -3,7 +3,9 @@ package tsa.actors;
 import tsa.messages.ScanBag;
 import tsa.messages.ScanBagResults;
 import akka.actor.ActorRef;
+import akka.actor.Actors;
 import akka.actor.UntypedActor;
+import tsa.messages.ActorTerminate;
 
 public class BagScan extends UntypedActor {
 	
@@ -33,6 +35,20 @@ public class BagScan extends UntypedActor {
 			ScanBagResults resultsMessage = 
 					new ScanBagResults(passenger, passed);
 			security.tell(resultsMessage);
+		}
+		
+		//Message to terminate and actor terminates itself. 
+		if (message instanceof ActorTerminate) { 
+			
+			//Try and tell the security to die. If already dead then it will 
+			//throw an exception because it can't tell it to die. Catch the exception
+			//and print info message. 
+			try { 
+				security.tell(new ActorTerminate());
+			} catch (Exception excep) { 
+				System.out.println("Security Actor already terminated OR there is another error.");
+			}
+			this.getContext().tell(Actors.poisonPill());
 		}
 	}
 

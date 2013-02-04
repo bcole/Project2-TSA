@@ -3,21 +3,26 @@ package tsa.actors;
 import java.util.HashMap;
 import java.util.Map;
 
+import tsa.messages.ActorTerminate;
 import tsa.messages.ScanBagResults;
 import tsa.messages.ScanBodyResults;
 import akka.actor.ActorRef;
+import akka.actor.Actors;
 import akka.actor.UntypedActor;
 
 public class Security extends UntypedActor {
 	
 	private final int number;
 	
-	// XXX: Does this need to be thread safe if it is contained in this Actor?
 	private Map<ActorRef, ScanResults> resultsMap 
 			= new HashMap<ActorRef, ScanResults>();
 	
-	public Security(int number) {
+	private final ActorRef jail;
+	
+	// Constructor. 
+	public Security(int number, ActorRef jail) {
 		this.number = number;
+		this.jail = jail; 
 	}
 
 	@Override
@@ -39,7 +44,8 @@ public class Security extends UntypedActor {
 				resultsMap.get(passenger).setScanBagResultsPassed(passed);
 				respondToScanResults(passenger);
 			}
-		} else if (message instanceof ScanBodyResults) {
+		} 
+		else if (message instanceof ScanBodyResults) {
 			ScanBodyResults resultsMessage = (ScanBodyResults) message;
 			ActorRef passenger = resultsMessage.passenger;
 			boolean passed = resultsMessage.passed;
@@ -54,6 +60,16 @@ public class Security extends UntypedActor {
 				resultsMap.get(passenger).setScanBodyResultsPassed(passed);
 				respondToScanResults(passenger);
 			}
+		} 
+		//Message to terminate and actor terminates itself. 
+		if (message instanceof ActorTerminate) { 
+			
+			try {
+				jail.tell(new ActorTerminate());
+			} catch (Exception excep) { 
+				System.out.println("Jail Actor already terminated OR there is another error.");
+			}
+			this.getContext().tell(Actors.poisonPill());
 		}
 	}
 	

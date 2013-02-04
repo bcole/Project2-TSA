@@ -1,5 +1,6 @@
 package tsa.actors;
 
+import tsa.messages.ActorTerminate;
 import tsa.messages.ArrivedAtDocCheck;
 import tsa.messages.FailedDocCheck;
 import akka.actor.ActorRef;
@@ -22,7 +23,12 @@ public class Passenger extends UntypedActor {
 	
 	@Override
 	public void onReceive(Object message) {
-		if (message instanceof FailedDocCheck) {
+//		if (message instanceof FailedDocCheck) {
+//			this.getContext().tell(Actors.poisonPill());
+//		}
+		
+		//Message to terminate and actor terminates itself. 
+		if (message instanceof ActorTerminate) { 
 			this.getContext().tell(Actors.poisonPill());
 		}
 	}
@@ -37,4 +43,5 @@ public class Passenger extends UntypedActor {
 	public String toString() {
 		return ("Passenger-" + number);
 	}
+	
 }

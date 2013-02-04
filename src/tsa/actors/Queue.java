@@ -2,10 +2,12 @@ package tsa.actors;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
+import tsa.messages.ActorTerminate;
 import tsa.messages.ArrivedAtQueue;
 import tsa.messages.ScanBag;
 import tsa.messages.ScanBody;
 import akka.actor.ActorRef;
+import akka.actor.Actors;
 import akka.actor.UntypedActor;
 
 public class Queue extends UntypedActor {
@@ -37,6 +39,15 @@ public class Queue extends UntypedActor {
 			
 			bagScan.tell(scanBagMessage);
 			bodyScan.tell(scanBodyMessage);
+		}
+		
+		//Message to terminate and actor terminates itself. 
+		if (message instanceof ActorTerminate) { 
+			
+			bagScan.tell(new ActorTerminate());
+			bodyScan.tell(new ActorTerminate());
+			
+			this.getContext().tell(Actors.poisonPill());
 		}
 	}
 
