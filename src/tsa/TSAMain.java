@@ -24,16 +24,16 @@ public class TSAMain {
 	public static void main(String[] args) {
 		final ActorRef[] queues = new ActorRef[NUMBER_OF_QUEUES];
 		
+		final ActorRef jail = Actors.actorOf(new UntypedActorFactory () { 
+			public UntypedActor create() { 
+				return new Jail(NUMBER_OF_PASSENGERS);
+			}
+		});
+		
 		// XXX: Perhaps some object group for each line would be good.  For now
 		//      constructor arguments will be used.
 		for (int i = 0; i < NUMBER_OF_QUEUES; i++) {
 			final int number = i;
-			
-			final ActorRef jail = Actors.actorOf(new UntypedActorFactory () { 
-				public UntypedActor create() { 
-					return new Jail(NUMBER_OF_PASSENGERS);
-				}
-			});
 			
 			final ActorRef security = Actors.actorOf(new UntypedActorFactory() { 
 				public UntypedActor create() { 
