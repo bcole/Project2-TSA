@@ -10,14 +10,18 @@ import akka.actor.UntypedActor;
 
 public class Queue extends UntypedActor {
 	
+	private final int number;
 	private final ActorRef bagScan;
 	private final ActorRef bodyScan;
 	
 	private final java.util.Queue<ActorRef> passengerQueue;
 	
-	public Queue(ActorRef bagScan, ActorRef bodyScan) {
+	public Queue(int number, ActorRef bagScan, ActorRef bodyScan) {
+		this.number = number;
 		this.bagScan = bagScan;
 		this.bodyScan = bodyScan;
+		
+		this.getContext().setId("Queue-" + Integer.toString(this.number));
 		
 		// XXX: Does this need to be a thread-safe queue?
 		passengerQueue = new LinkedBlockingQueue<ActorRef>();

@@ -10,9 +10,15 @@ import akka.actor.UntypedActor;
 
 public class Security extends UntypedActor {
 	
+	private final int number;
+	
 	// XXX: Does this need to be thread safe if it is contained in this Actor?
 	private Map<ActorRef, ScanResults> resultsMap 
 			= new HashMap<ActorRef, ScanResults>();
+	
+	public Security(int number) {
+		this.number = number;
+	}
 
 	@Override
 	public void onReceive(Object message) {
@@ -55,21 +61,9 @@ public class Security extends UntypedActor {
 		ScanResults scanResults = resultsMap.remove(passenger);
 		
 		if (scanResults.getScanBagResultsPassed()) {
-			System.out.println(passenger.getId() + ": Passed bag scan.");
+			System.out.println(passenger.getId() + ": Passed Security-" + number);
 		} else {
-			System.out.println(passenger.getId() + ": Failed bag scan.");
-		}
-		
-		if (scanResults.getScanBodyResultsPassed()) {
-			System.out.println(passenger.getId() + ": Passed body scan.");
-		} else {
-			System.out.println(passenger.getId() + ": Failed body scan.");
-		}
-		
-		if (scanResults.getScanBagResultsPassed()) {
-			System.out.println(passenger.getId() + ": Passed security.");
-		} else {
-			System.out.println(passenger.getId() + ": Failed security.");
+			System.out.println(passenger.getId() + ": Failed Security-" + number);
 		}
 	}
 	

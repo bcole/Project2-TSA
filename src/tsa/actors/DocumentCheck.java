@@ -24,9 +24,11 @@ public class DocumentCheck extends UntypedActor {
 			// XXX: Passengers are randomly turned away for document problems at
 			//      a probability of 20%.
 			if (Math.random() < 0.2) {
+				System.out.println(passenger.getId() + ": Failed DocumentCheck");
 				FailedDocCheck failedMessage = new FailedDocCheck();
 				passenger.tell(failedMessage);
 			} else {
+				System.out.println(passenger.getId() + ": Passed DocumentCheck");
 				ArrivedAtQueue arrivedMessage = new ArrivedAtQueue(passenger);
 				queues[nextQueueIndex].tell(arrivedMessage);
 				

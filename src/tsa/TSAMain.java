@@ -13,7 +13,7 @@ import akka.actor.UntypedActorFactory;
 
 public class TSAMain {
 	
-	public static final int NUMBER_OF_PASSENGERS = 5;
+	public static final int NUMBER_OF_PASSENGERS = 15;
 	public static final int NUMBER_OF_QUEUES = 3;
 
 	/**
@@ -25,23 +25,28 @@ public class TSAMain {
 		// XXX: Perhaps some object group for each line would be good.  For now
 		//      constructor arguments will be used.
 		for (int i = 0; i < NUMBER_OF_QUEUES; i++) {
-			final ActorRef security = Actors.actorOf(Security.class);
+			final int number = i;
+			final ActorRef security = Actors.actorOf(new UntypedActorFactory() {
+				public UntypedActor create() {
+					return new Security(number);
+				}
+			});
 			
 			final ActorRef bagScan = Actors.actorOf(new UntypedActorFactory() {
 				public UntypedActor create() {
-					return new BagScan(security);
+					return new BagScan(number, security);
 				}
 			});
 			
 			final ActorRef bodyScan = Actors.actorOf(new UntypedActorFactory() {
 				public UntypedActor create() {
-					return new BodyScan(security);
+					return new BodyScan(number, security);
 				}
 			});
 			
 			queues[i] = Actors.actorOf(new UntypedActorFactory() {
 				public UntypedActor create() {
-					return new Queue(bagScan, bodyScan);
+					return new Queue(number, bagScan, bodyScan);
 				}
 			});
 			

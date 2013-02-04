@@ -7,10 +7,14 @@ import akka.actor.UntypedActor;
 
 public class BagScan extends UntypedActor {
 	
+	private final int number;
 	private final ActorRef security;
 	
-	public BagScan(ActorRef security) {
+	public BagScan(int number, ActorRef security) {
+		this.number = number;
 		this.security = security;
+		
+		this.getContext().setId("BagScan-" + Integer.toString(this.number));
 	}
 
 	@Override
@@ -19,6 +23,12 @@ public class BagScan extends UntypedActor {
 			// Baggage randomly fails inspection with a probability of 20%.
 			boolean passed = (Math.random() < 0.8);
 			ActorRef passenger = ((ScanBag) message).passenger;
+			
+			if (passed) {
+				System.out.println(passenger.getId() + ": Passed BagScan-" + number);
+			} else {
+				System.out.println(passenger.getId() + ": Failed BagScan-" + number);
+			}
 
 			ScanBagResults resultsMessage = 
 					new ScanBagResults(passenger, passed);
