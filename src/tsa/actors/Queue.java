@@ -4,8 +4,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import tsa.messages.ActorTerminate;
 import tsa.messages.ArrivedAtQueue;
+import tsa.messages.BodyScanReady;
 import tsa.messages.ScanBag;
 import tsa.messages.ScanBody;
+import tsa.messages.ScanBodyRequest;
 import akka.actor.ActorRef;
 import akka.actor.Actors;
 import akka.actor.UntypedActor;
@@ -33,12 +35,21 @@ public class Queue extends UntypedActor {
 	public void onReceive(Object message) {
 		if (message instanceof ArrivedAtQueue) {
 			ActorRef passenger = ((ArrivedAtQueue) message).passenger;
+			passengerQueue.add(passenger);
 
 			ScanBag scanBagMessage = new ScanBag(passenger);
-			ScanBody scanBodyMessage = new ScanBody(passenger);
+			ScanBodyRequest scanBodyRequestMessage = 
+					new ScanBodyRequest(this.getContext());
 			
 			bagScan.tell(scanBagMessage);
-			bodyScan.tell(scanBodyMessage);
+			bodyScan.tell(scanBodyRequestMessage);
+		} else if (message instanceof BodyScanReady) {
+			if (!passengerQueue.isEmpty()) {
+				ActorRef passenger = passengerQueue.remove();
+				ScanBody scanBodyMessage = new ScanBody(passenger);
+
+				bodyScan.tell(scanBodyMessage);
+			}
 		}
 		
 		//Message to terminate and actor terminates itself. 
