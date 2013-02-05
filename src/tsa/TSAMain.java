@@ -64,6 +64,7 @@ public class TSAMain {
 			bagScan.start();
 			bodyScan.start();
 			queues[i].start();
+			jail.start();
 		}
 		
 		final ActorRef documentCheck = Actors.actorOf(new UntypedActorFactory() {
