@@ -11,10 +11,14 @@ public class Jail extends UntypedActor {
 
 	private final ActorRef[] inJail; 
 	private int jailIndex; 
+	private int numQueues;
+	private int queuesClosed;
 	
-	public Jail(int jailCapacity) { 
+	public Jail(int jailCapacity, int numQueues) { 
 		
 		this.inJail = new ActorRef[jailCapacity];
+		this.numQueues = numQueues;
+		queuesClosed = 0;
 		jailIndex = 0; 
 	}
 	
@@ -35,8 +39,12 @@ public class Jail extends UntypedActor {
 		}
 		
 		// Message to terminate and actor terminates itself. 
-		if (Message instanceof ActorTerminate) { 
-			this.getContext().tell(Actors.poisonPill());
+		if (Message instanceof ActorTerminate) {
+			queuesClosed++;
+			if(queuesClosed == numQueues){			
+				System.out.println("Terminating Jail");
+				this.getContext().tell(Actors.poisonPill());
+			}
 		}
 		
 	}

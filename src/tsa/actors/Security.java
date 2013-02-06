@@ -19,10 +19,13 @@ public class Security extends UntypedActor {
 	
 	private final ActorRef jail;
 	
+	private int closed;
+	
 	// Constructor. 
 	public Security(int number, ActorRef jail) {
 		this.number = number;
 		this.jail = jail; 
+		closed = 0;
 	}
 
 	@Override
@@ -63,13 +66,15 @@ public class Security extends UntypedActor {
 		} 
 		//Message to terminate and actor terminates itself. 
 		if (message instanceof ActorTerminate) { 
-			
-			try {
-				jail.tell(new ActorTerminate());
-			} catch (Exception excep) { 
-				System.out.println("Jail Actor already terminated OR there is another error.");
+			closed++;
+			if(closed == 2){
+				try {
+					jail.tell(new ActorTerminate());
+				} catch (Exception excep) { 
+					System.out.println("Jail Actor already terminated OR there is another error.");
+				}
+				this.getContext().tell(Actors.poisonPill());
 			}
-			this.getContext().tell(Actors.poisonPill());
 		}
 	}
 	

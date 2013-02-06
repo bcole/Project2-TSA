@@ -26,7 +26,7 @@ public class TSAMain {
 		
 		final ActorRef jail = Actors.actorOf(new UntypedActorFactory () { 
 			public UntypedActor create() { 
-				return new Jail(NUMBER_OF_PASSENGERS);
+				return new Jail(NUMBER_OF_PASSENGERS,NUMBER_OF_QUEUES);
 			}
 		});
 		
