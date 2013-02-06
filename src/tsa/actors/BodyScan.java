@@ -1,4 +1,6 @@
 package tsa.actors;
+import java.util.Random;
+
 import tsa.messages.ActorTerminate;
 import tsa.messages.BodyScanReady;
 import tsa.messages.ScanBody;
@@ -66,7 +68,16 @@ public class BodyScan extends UntypedActor {
 		
 		// TODO: SLEEP HERE
 		
-
+		Random random = new Random(); 
+		long sleepTime = Long.valueOf(random.nextInt(8000)); //sleep for random amount of time. 
+		
+		try {
+			System.out.println("BodyScan " + number + " scanning " + currentPassenger.getId() + "...");
+			Thread.sleep(sleepTime);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
 		if (passed) {
 			System.out.println(currentPassenger.getId() + 
 					": Passed BodyScan-" + number);
