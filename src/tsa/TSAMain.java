@@ -91,19 +91,9 @@ public class TSAMain {
 			passenger.start();
 		}
 		
-		//For testing termination stuff below. 
-		//Otherwise Actors will start terminating immediately. 
-		//The termination seems to work. but we still need to know 
-		//when to execute our termination stuff. 
-		try {
-			Thread.sleep(3000L);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		// XXX: Force close required to end program.
-		terminateAllActors(passengers, documentCheck, queues);
+		// TODO: Need to make sure termination is happening correctly. 
+		//terminateAllActors(passengers, documentCheck, queues);
 	}
 	
 	//To Terminate the actors 
