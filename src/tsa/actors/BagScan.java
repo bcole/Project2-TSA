@@ -74,6 +74,7 @@ public class BagScan extends UntypedActor {
 				} catch (Exception excep) { 
 					System.out.println("Security Actor already terminated OR there is another error.");
 				}
+				bagTimer.tell(Actors.poisonPill());
 				this.getContext().tell(Actors.poisonPill());
 			} else {	// Try again.
 				this.getContext().tell(message);
