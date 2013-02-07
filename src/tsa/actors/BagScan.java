@@ -41,7 +41,7 @@ public class BagScan extends UntypedActor {
 			
 			// Bag processing takes a random amount of time, between 200 and 300 millis.
 			Random rand = new Random();
-			long whenToWakeUp = System.currentTimeMillis() + 2000 + rand.nextInt(2000);
+			long whenToWakeUp = System.currentTimeMillis() + 200 + rand.nextInt(100);
 			// Tell BagTimer actor.
 			bagTimer.tell(new TimeBagMessage(whenToWakeUp, this.getContext()));
 		}
@@ -63,8 +63,9 @@ public class BagScan extends UntypedActor {
 		}
 		
 		//Message to terminate and actor terminates itself. 
-		if (message instanceof ActorTerminate) { 
+		if (message instanceof ActorTerminate) {
 			if(passengerBags.isEmpty()){	// Can we terminate?
+				System.out.println(this.getContext().getId() + ": Scanner shut down for the day.");
 				//Try and tell the security to die. If already dead then it will 
 				//throw an exception because it can't tell it to die. Catch the exception
 				//and print info message. 

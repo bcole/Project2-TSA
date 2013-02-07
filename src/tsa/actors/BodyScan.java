@@ -52,8 +52,8 @@ public class BodyScan extends UntypedActor {
 			
 			//Before it terminates itself check that there is no current passenger. 
 			//If there are no passengers then terminate the actor. 
-			if (currentPassenger == null) { 
-			
+			if (currentPassenger == null) {
+				System.out.println(this.getContext().getId() + ": Scanner shut down for the day.");
 				//Try and tell the security to die. If already dead then it will 
 				//throw an exception because it can't tell it to die. Catch the exception
 				//and print info message. 
@@ -80,7 +80,7 @@ public class BodyScan extends UntypedActor {
 		// TODO: SLEEP HERE
 		
 		Random random = new Random(); 
-		long sleepTime = Long.valueOf(random.nextInt(8000)); //sleep for random amount of time. 
+		long sleepTime = Long.valueOf(500 + random.nextInt(2000)); //sleep for random amount of time. 
 		
 		try {
 			System.out.println(this.getContext().getId() + ": scanning " + currentPassenger.getId() + "...");

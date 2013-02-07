@@ -25,10 +25,10 @@ public class DocumentCheck extends UntypedActor {
 		if (message instanceof ArrivedAtDocCheck) {
 			ActorRef passenger = ((ArrivedAtDocCheck) message).passenger;
 			
-			// XXX: For simulation, it takes 3 +- 2 seconds to finish.
+			// Process document.
 			Random rand = new Random();
 			try {
-				Thread.sleep(1000 + rand.nextInt(4));
+				Thread.sleep(300 + rand.nextInt(500));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
