@@ -1,5 +1,7 @@
 package tsa.actors;
 
+import java.util.Random;
+
 import tsa.messages.ActorTerminate;
 import tsa.messages.ArrivedAtDocCheck;
 import tsa.messages.ArrivedAtQueue;
@@ -22,6 +24,14 @@ public class DocumentCheck extends UntypedActor {
 	public void onReceive(Object message) {
 		if (message instanceof ArrivedAtDocCheck) {
 			ActorRef passenger = ((ArrivedAtDocCheck) message).passenger;
+			
+			// XXX: For simulation, it takes 5 +- 2 seconds to finish.
+			Random rand = new Random();
+			try {
+				Thread.sleep(3000 + rand.nextInt(4));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			
 			// XXX: Passengers are randomly turned away for document problems at
 			//      a probability of 20%.

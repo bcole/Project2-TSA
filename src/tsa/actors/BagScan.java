@@ -40,12 +40,13 @@ public class BagScan extends UntypedActor {
 			
 			// Bag processing takes a random amount of time, between 200 and 300 millis.
 			Random rand = new Random();
-			long whenToWakeUp = System.currentTimeMillis() + 200 + rand.nextInt(100);
+			long whenToWakeUp = System.currentTimeMillis() + 2000 + rand.nextInt(2000);
 			// Tell BagTimer actor.
 			bagTimer.tell(new TimeBagMessage(whenToWakeUp, this.getContext()));
 		}
 		
 		if(message instanceof String && ((String) message).equals("finished")){
+			System.out.println("GOT FINISHED MESSAGE");
 			ActorRef passenger = passengerBags.remove();
 			boolean passed = (Math.random() < 0.8);
 			
