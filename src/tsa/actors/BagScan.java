@@ -23,6 +23,7 @@ public class BagScan extends UntypedActor {
 	
 	public BagScan(int number, ActorRef security) {
 		bagTimer = Actors.actorOf(BagTimer.class);
+		bagTimer.start();
 		
 		this.number = number;
 		this.security = security;
