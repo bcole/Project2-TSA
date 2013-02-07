@@ -23,9 +23,9 @@ public class Passenger extends UntypedActor {
 	
 	@Override
 	public void onReceive(Object message) {
-//		if (message instanceof FailedDocCheck) {
-//			this.getContext().tell(Actors.poisonPill());
-//		}
+		if (message instanceof FailedDocCheck) {
+			this.getContext().tell(Actors.poisonPill());
+		}
 		
 		//Message to terminate and actor terminates itself. 
 		if (message instanceof ActorTerminate) { 

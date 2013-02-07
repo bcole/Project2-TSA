@@ -25,10 +25,10 @@ public class DocumentCheck extends UntypedActor {
 		if (message instanceof ArrivedAtDocCheck) {
 			ActorRef passenger = ((ArrivedAtDocCheck) message).passenger;
 			
-			// XXX: For simulation, it takes 5 +- 2 seconds to finish.
+			// XXX: For simulation, it takes 3 +- 2 seconds to finish.
 			Random rand = new Random();
 			try {
-				Thread.sleep(3000 + rand.nextInt(4));
+				Thread.sleep(1000 + rand.nextInt(4));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -54,7 +54,11 @@ public class DocumentCheck extends UntypedActor {
 		}
 		
 		// Message to terminate and actor terminates itself. 
-		if (message instanceof ActorTerminate) { 
+		if (message instanceof ActorTerminate) {
+			System.out.println("Terminating Document Check");
+			for (ActorRef queue : queues) { 
+				queue.tell(message);
+			}
 			this.getContext().tell(Actors.poisonPill());
 		}
 	}

@@ -22,28 +22,31 @@ public class Jail extends UntypedActor {
 		jailIndex = 0; 
 	}
 	
-	public void onReceive(Object Message) { 
-		if (Message instanceof ArrivedAtJail) {
+	public void onReceive(Object message) { 
+		if (message instanceof ArrivedAtJail) {
 			//Put Passenger in Jail List
-			ActorRef badPassenger = ((ArrivedAtJail) Message).passenger;
-			inJail[jailIndex] = badPassenger;
+			ActorRef badPassenger = ((ArrivedAtJail) message).passenger;
+			inJail[jailIndex++] = badPassenger;
 			System.out.println(badPassenger.getId() + " put in jail.");
-			
-			//Increment index for next passenger. 
-			jailIndex++; 
 		}
 		
-		if (Message instanceof GoToDetention) { 
+		if (message instanceof GoToDetention) { 
 			// End of day passenger move to detention facility. 
-			System.out.println("Moving " + inJail.length + " to permanent detention facility");
+			System.out.println("Moving " + inJail.length + " Passengers to permanent detention facility");
+			for(int i=0; i<jailIndex; i++){
+				inJail[i].tell(new ActorTerminate());
+			}
+			
+			// Now terminate the jail.
+			System.out.println("Terminating Jail");
+			this.getContext().tell(Actors.poisonPill());
 		}
 		
 		// Message to terminate and actor terminates itself. 
-		if (Message instanceof ActorTerminate) {
+		if (message instanceof ActorTerminate) {
 			queuesClosed++;
-			if(queuesClosed == numQueues){			
-				System.out.println("Terminating Jail");
-				this.getContext().tell(Actors.poisonPill());
+			if(queuesClosed == numQueues){
+				this.getContext().tell(new GoToDetention());
 			}
 		}
 		

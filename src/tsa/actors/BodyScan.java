@@ -6,6 +6,7 @@ import tsa.messages.BodyScanReady;
 import tsa.messages.ScanBody;
 import tsa.messages.ScanBodyRequest;
 import tsa.messages.ScanBodyResults;
+import akka.actor.ActorInitializationException;
 import akka.actor.ActorRef;
 import akka.actor.Actors;
 import akka.actor.UntypedActor;
@@ -24,6 +25,7 @@ public class BodyScan extends UntypedActor {
 		this.security = security;
 		
 		this.getContext().setId("BodyScan-" + Integer.toString(this.number));
+		System.out.println(this.getContext().getId() + ": Scanner turned on for the day.");
 	}
 	
 	@Override
@@ -36,7 +38,9 @@ public class BodyScan extends UntypedActor {
 			
 			// The body scan is ready if there is no current passenger.
 			if (currentPassenger == null) {
-				queue.tell(new BodyScanReady());
+				try{
+					queue.tell(new BodyScanReady());
+				} catch(ActorInitializationException e){}	// Queue has ended, program is terminating.
 			}
 		} else if (message instanceof ScanBody) {
 			// This can only be reached after BodyScanReady is sent to Queue.
@@ -60,6 +64,8 @@ public class BodyScan extends UntypedActor {
 				}
 				
 				this.getContext().tell(Actors.poisonPill());
+			} else {	// Try again.
+				this.getContext().tell(message);
 			}
 		}
 	}
@@ -77,7 +83,7 @@ public class BodyScan extends UntypedActor {
 		long sleepTime = Long.valueOf(random.nextInt(8000)); //sleep for random amount of time. 
 		
 		try {
-			System.out.println("BodyScan " + number + " scanning " + currentPassenger.getId() + "...");
+			System.out.println(this.getContext().getId() + ": scanning " + currentPassenger.getId() + "...");
 			Thread.sleep(sleepTime);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -97,8 +103,10 @@ public class BodyScan extends UntypedActor {
 		
 		currentPassenger = null;
 		
-		// Always tell the Queue when BodyScan goes from full to empty.
-		queue.tell(new BodyScanReady());
+		try{
+			// Always tell the Queue when BodyScan goes from full to empty.
+			queue.tell(new BodyScanReady());
+		} catch(ActorInitializationException e){}	// Queue has ended, program is terminating.
 	}
 
 }

@@ -27,6 +27,7 @@ public class Security extends UntypedActor {
 		this.number = number;
 		this.jail = jail; 
 		closed = 0;
+		this.getContext().setId("Security-"+number);
 	}
 
 	@Override
@@ -69,6 +70,7 @@ public class Security extends UntypedActor {
 		if (message instanceof ActorTerminate) { 
 			closed++;
 			if(closed == 2){
+				System.out.println("Terminating " + this.getContext().getId());
 				try {
 					jail.tell(new ActorTerminate());
 				} catch (Exception excep) { 
@@ -82,8 +84,9 @@ public class Security extends UntypedActor {
 	private void respondToScanResults(ActorRef passenger) {
 		ScanResults scanResults = resultsMap.remove(passenger);
 		
-		if (scanResults.getScanBagResultsPassed()) {
+		if (scanResults.getScanBagResultsPassed() && scanResults.getScanBodyResultsPassed()) {
 			System.out.println(passenger.getId() + ": Passed Security-" + number);
+			passenger.tell(new ActorTerminate());	// We don't need the passenger anymore.
 		} else {
 			System.out.println(passenger.getId() + ": Failed Security-" + number);
 			jail.tell(new ArrivedAtJail(passenger));

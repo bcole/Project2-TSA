@@ -29,6 +29,7 @@ public class BagScan extends UntypedActor {
 		this.security = security;
 		
 		this.getContext().setId("BagScan-" + Integer.toString(this.number));
+		System.out.println(this.getContext().getId() + ": Scanner turned on for the day.");
 	}
 
 	@Override
@@ -46,7 +47,6 @@ public class BagScan extends UntypedActor {
 		}
 		
 		if(message instanceof String && ((String) message).equals("finished")){
-			System.out.println("GOT FINISHED MESSAGE");
 			ActorRef passenger = passengerBags.remove();
 			boolean passed = (Math.random() < 0.8);
 			
@@ -64,16 +64,19 @@ public class BagScan extends UntypedActor {
 		
 		//Message to terminate and actor terminates itself. 
 		if (message instanceof ActorTerminate) { 
-			
-			//Try and tell the security to die. If already dead then it will 
-			//throw an exception because it can't tell it to die. Catch the exception
-			//and print info message. 
-			try { 
-				security.tell(new ActorTerminate());
-			} catch (Exception excep) { 
-				System.out.println("Security Actor already terminated OR there is another error.");
+			if(passengerBags.isEmpty()){	// Can we terminate?
+				//Try and tell the security to die. If already dead then it will 
+				//throw an exception because it can't tell it to die. Catch the exception
+				//and print info message. 
+				try { 
+					security.tell(message);
+				} catch (Exception excep) { 
+					System.out.println("Security Actor already terminated OR there is another error.");
+				}
+				this.getContext().tell(Actors.poisonPill());
+			} else {	// Try again.
+				this.getContext().tell(message);
 			}
-			this.getContext().tell(Actors.poisonPill());
 		}
 	}
 

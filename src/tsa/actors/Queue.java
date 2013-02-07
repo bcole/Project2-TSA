@@ -53,12 +53,20 @@ public class Queue extends UntypedActor {
 		}
 		
 		//Message to terminate and actor terminates itself. 
-		if (message instanceof ActorTerminate) { 
-			
-			bagScan.tell(new ActorTerminate());
-			bodyScan.tell(new ActorTerminate());
-			
-			this.getContext().tell(Actors.poisonPill());
+		if (message instanceof ActorTerminate) {
+			// Make sure the queue is empty
+			if(passengerQueue.isEmpty()){
+				System.out.println("Terminating All Actors in " + this.getContext().getId());
+				
+				bagScan.tell(new ActorTerminate());
+				bodyScan.tell(new ActorTerminate());
+				
+				this.getContext().tell(Actors.poisonPill());
+			} else {
+				// Add the message to the end of the Actor queue.
+				// Basically, try again next time the queue is flushed.
+				this.getContext().tell(message);
+			}
 		}
 	}
 

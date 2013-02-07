@@ -22,6 +22,7 @@ public class TSAMain {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.out.println("-- Starting Simulation --");
 		final ActorRef[] queues = new ActorRef[NUMBER_OF_QUEUES];
 		
 		final ActorRef jail = Actors.actorOf(new UntypedActorFactory () { 
@@ -91,33 +92,16 @@ public class TSAMain {
 			passenger.start();
 		}
 		
-		// XXX: Force close required to end program.
-		// TODO: Need to make sure termination is happening correctly. 
-		//terminateAllActors(passengers, documentCheck, queues);
-	}
-	
-	//To Terminate the actors 
-	//Current order of termination 
-	//Passengers -> DocumentCheck -> Queue -> BagScan & BodyScan -> Security -> Jail
-	private static void terminateAllActors(ActorRef[] passengers, ActorRef documentCheck, ActorRef[] queues) { 
-		
-		ActorTerminate terminateSelf = new ActorTerminate(); 
-		
-		System.out.println("Terminating Actors");
-		
-		System.out.println("Terminating All Passenger Actors");
-		for (int i = 0; i < NUMBER_OF_PASSENGERS; i++ ) { 
-			passengers[i].tell(terminateSelf);
+		// Sleep for a "day"
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
 		
-		System.out.println("Terminating Document Check");
-		documentCheck.tell(terminateSelf);
-		
-		for (int i = 0; i < NUMBER_OF_QUEUES; i++) { 
-			System.out.println("Terminating All Actors in Queue " + i);
-			queues[i].tell(terminateSelf);
-		}
-		
+		// Day is over, start terminating.
+		System.out.println("-- End Of Day, Beginning System Shutdown --");
+		documentCheck.tell(new ActorTerminate());
 	}
 
 }
