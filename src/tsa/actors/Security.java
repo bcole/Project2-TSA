@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import tsa.messages.ActorTerminate;
+import tsa.messages.ArrivedAtJail;
 import tsa.messages.ScanBagResults;
 import tsa.messages.ScanBodyResults;
 import akka.actor.ActorRef;
@@ -85,6 +86,7 @@ public class Security extends UntypedActor {
 			System.out.println(passenger.getId() + ": Passed Security-" + number);
 		} else {
 			System.out.println(passenger.getId() + ": Failed Security-" + number);
+			jail.tell(new ArrivedAtJail(passenger));
 		}
 	}
 	

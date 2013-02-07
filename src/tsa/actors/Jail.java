@@ -27,7 +27,7 @@ public class Jail extends UntypedActor {
 			//Put Passenger in Jail List
 			ActorRef badPassenger = ((ArrivedAtJail) Message).passenger;
 			inJail[jailIndex] = badPassenger;
-			System.out.println("Passenger put in jail.");
+			System.out.println(badPassenger.getId() + " put in jail.");
 			
 			//Increment index for next passenger. 
 			jailIndex++; 
