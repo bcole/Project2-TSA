@@ -15,13 +15,23 @@ import tsa.messages.ActorTerminate;
 
 public class TSAMain {
 	
-	public static final int NUMBER_OF_PASSENGERS = 15;
-	public static final int NUMBER_OF_QUEUES = 3;
+	public static int NUMBER_OF_PASSENGERS = 15;
+	public static int NUMBER_OF_QUEUES = 3;
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		
+		//Check if there is an argument being passed 
+		//If not just proceed with default arguments. 
+		if (args.length >= 2) {
+			NUMBER_OF_PASSENGERS = Integer.parseInt(args[0]);
+			NUMBER_OF_QUEUES = Integer.parseInt(args[1]);
+		} else { 
+			System.out.println("Incorrect number of program arguments, executing program with default variables.");
+		}
+		
 		System.out.println("-- Starting Simulation --");
 		final ActorRef[] queues = new ActorRef[NUMBER_OF_QUEUES];
 		
